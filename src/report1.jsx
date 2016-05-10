@@ -42,6 +42,6 @@ export default function generateReport(data) {
 //make simple react-like components
 class TitleBar extends Component {
     render() {
-        return <block fontSize="30pt">{this.children}</block>;
+        return <block fontSize="30pt">{this.props.children}</block>;
     }
 }

@@ -30,7 +30,7 @@ function generateReport(data) {
                 <block textAlign="end">Page <pageNumber /></block>
             </PageHeader>
             <PageContent>
-                <block {...styles.title}>{props.children}</block>
+                <block {...styles.title}>Contacts</block>
                 {data.contacts.map(contact => <AddressBlock {...contact} />)}
             </PageContent>
         </PageSequence>

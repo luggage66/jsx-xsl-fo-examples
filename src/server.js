@@ -1,27 +1,24 @@
 import * as http from 'http';
 import { spawn }  from 'child_process';
-import XSLFO, { Component } from './xslfo';
-import report from './report';
+import XSLFO, { Component } from 'jsx-xsl-fo';
+import report from './addressList.report';
 
 
 const server = http.createServer((req, res) => {
 
-    var builtReport = report();
+    var builtReport = report;
 
     res.writeHead(200, { 'Content-Type': 'application/pdf' });
 
     let fopProcess = spawn('fop', ['-fo', '-', '-pdf', '-']);
-    fopProcess.stdout.pipe(res);
 
-    fopProcess.stdin.write('<?xml version="1.0" encoding="UTF-8"?>');
-    fopProcess.stdin.write(XSLFO.renderToString(builtReport));
+    fopProcess.stdout.pipe(res);
+    XSLFO.renderToStream(builtReport, fopProcess.stdin);
     fopProcess.stdin.end();
 
     fopProcess.on('close', (code) => {
         res.end();
     });
-
-
 });
 
 server.on('clientError', (err, socket) => {

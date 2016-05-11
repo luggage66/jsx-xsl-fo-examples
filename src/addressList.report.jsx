@@ -1,41 +1,36 @@
 /** @jsx XSLFO.createElement */
 import XSLFO, { Component } from 'jsx-xsl-fo';
-import { Report, PageSequence, PageContent, PageHeader } from 'jsx-xsl-fo/reporting';
+import { Report, PageSequence, PageContent, PageHeader, PageFooter } from 'jsx-xsl-fo/reporting';
 
 const styles = {
     document: {
         fontFamily: 'serif'
     },
     title: {
-        fontSize: '30pt'
+        fontSize: '30pt',
+        borderBottom: "0.75pt solid black"
     }
 };
 
-//define components as functions
-function Title(props) {
-    return <block {...styles.title}>{props.children}</block>;
+// define components as functions.
+function AddressBlock(props) {
+    return <block space-before="1em" keep-together-within-page="always">
+        <block fontWeight="bold">{props.lastName}, {props.firstName}</block>
+        <block>{props.streetAddress}</block>
+        <block>{props.city}, {props.state} {props.zipCode}</block>
+    </block>;
 }
 
-// or as ES6 classes
-class AddressBlock extends Component {
-    render() {
-        return <block margin-bottom="1em" keep-together-within-page="always">
-            <block>{this.props.lastName}, {this.props.firstName}</block>
-            <block>{this.props.streetAddress}</block>
-            <block>{this.props.city}, {this.props.state} {this.props.zipCode}</block>
-        </block>;
-    }
-}
-
-// Main report function
+// Main report function.
+// We use a couple of the helper components that deal with some XSL-FO structures.
 function generateReport(data) {
     return <Report {...styles.document}>
         <PageSequence>
             <PageHeader>
-                <block text-align="end">Page <pageNumber /></block>
+                <block textAlign="end">Page <pageNumber /></block>
             </PageHeader>
             <PageContent>
-                <Title>Contacts!</Title>
+                <block {...styles.title}>{props.children}</block>
                 {data.contacts.map(contact => <AddressBlock {...contact} />)}
             </PageContent>
         </PageSequence>
@@ -51,7 +46,7 @@ let data = {
         lastName: faker.name.lastName(),
         streetAddress: faker.address.streetAddress(),
         city: faker.address.city(),
-        state: faker.address.state(),
+        state: faker.address.stateAbbr(),
         zipCode: faker.address.zipCode()
     }))
 };
